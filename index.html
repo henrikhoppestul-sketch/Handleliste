@@ -9,71 +9,47 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: 'Nunito', 'Segoe UI', sans-serif;
-    background: #faf9f6;
-    color: #333;
+    background: #faf9f6; color: #333;
     min-height: 100dvh;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     padding-bottom: 90px;
   }
-
   .header {
     background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
-    padding: 28px 20px 0;
-    border-radius: 0 0 24px 24px;
-    color: #fff;
-    position: sticky; top: 0; z-index: 10;
+    padding: 28px 20px 0; border-radius: 0 0 24px 24px;
+    color: #fff; position: sticky; top: 0; z-index: 10;
     box-shadow: 0 4px 20px rgba(45,80,22,0.25);
   }
   .header-row { display: flex; align-items: center; justify-content: space-between; }
   .header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
   .header .sub { font-size: 13px; opacity: 0.85; font-weight: 600; margin-top: 4px; }
   .btn-header {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff; border-radius: 12px;
-    padding: 8px 12px; font-size: 13px; font-weight: 700;
-    cursor: pointer; font-family: inherit;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; border-radius: 12px; padding: 8px 12px;
+    font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
   }
   .header-actions { display: flex; gap: 6px; }
-
-  .sync-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    display: inline-block; margin-right: 6px;
-  }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
   .sync-dot.connected { background: #a8e063; }
-  .sync-dot.disconnected { background: #ff6b6b; animation: pulse 1.5s infinite; }
-
-  .progress-track {
-    margin-top: 14px; height: 6px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 3px; overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%; width: 0%;
-    background: #a8e063; border-radius: 3px;
-    transition: width 0.4s cubic-bezier(.4,0,.2,1);
-  }
-
+  .sync-dot.disconnected { background: #ff6b6b; animation: blink 1.5s infinite; }
+  .progress-track { margin-top: 14px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: #a8e063; border-radius: 3px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
   .tabs { display: flex; margin-top: 16px; }
   .tab {
-    flex: 1; text-align: center;
-    padding: 10px 0 12px;
-    font-size: 14px; font-weight: 700;
-    cursor: pointer;
+    flex: 1; text-align: center; padding: 10px 0 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
     color: rgba(255,255,255,0.5);
     border: none; border-bottom: 3px solid transparent;
-    background: none; font-family: inherit;
-    transition: all 0.2s;
+    background: none; font-family: inherit; transition: all 0.2s;
   }
   .tab.active { color: #fff; border-bottom-color: #a8e063; }
-
   .view { display: none; }
   .view.active { display: block; }
 
+  /* ── List items ── */
   .list { padding: 12px 16px; }
   .category { margin-bottom: 16px; transition: opacity 0.3s; }
   .category.all-checked { opacity: 0.5; }
@@ -81,214 +57,283 @@
   .cat-icon { font-size: 18px; }
   .cat-name { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
   .cat-count { font-size: 11px; font-weight: 700; border-radius: 8px; padding: 2px 8px; }
-
-  .cat-items {
-    background: #fff; border-radius: 16px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    overflow: hidden; border: 1px solid #eee;
-  }
-
+  .cat-items { background: #fff; border-radius: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid #eee; }
   .item {
     display: flex; align-items: center; gap: 14px;
-    padding: 14px 16px; cursor: pointer;
-    transition: background 0.15s;
+    padding: 14px 16px; cursor: pointer; transition: background 0.15s;
     border-bottom: 1px solid #f0eeeb;
   }
   .item:last-child { border-bottom: none; }
   .item:active { background: #f8f7f4; }
-
   .checkbox {
-    width: 26px; height: 26px; border-radius: 8px;
-    border: 2px solid #ccc;
+    width: 26px; height: 26px; border-radius: 8px; border: 2px solid #ccc;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: all 0.2s;
   }
   .item.checked .checkbox { border-color: var(--cat-color); background: var(--cat-color); }
   .checkbox svg { display: none; }
   .item.checked .checkbox svg { display: block; }
-
   .item-name { font-size: 16px; font-weight: 600; transition: all 0.2s; flex: 1; }
   .item.checked .item-name { color: #aaa; text-decoration: line-through; }
-
-  .item-delete {
-    width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 8px; color: #ccc; font-size: 18px;
-    flex-shrink: 0; transition: color 0.15s;
-  }
+  .item-delete { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #ccc; font-size: 18px; flex-shrink: 0; }
   .item-delete:active { color: #e55; }
-
-  .done-msg {
-    text-align: center; padding: 24px 20px;
-    font-size: 20px; font-weight: 800; color: #4a7c59; display: none;
-  }
+  .done-msg { text-align: center; padding: 24px 20px; font-size: 20px; font-weight: 800; color: #4a7c59; display: none; }
   .done-msg.show { display: block; }
 
+  /* ── Bottom bar ── */
   .bottom-bar {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    padding: 12px 16px;
+    position: fixed; bottom: 0; left: 0; right: 0; padding: 12px 16px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
-    background: rgba(250,249,246,0.92);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid #e8e6e1; z-index: 20;
+    background: rgba(250,249,246,0.92); backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); border-top: 1px solid #e8e6e1; z-index: 20;
   }
   .btn-add-main {
-    width: 100%; padding: 14px;
-    background: #4a7c59; color: #fff; border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit;
-    box-shadow: 0 4px 14px rgba(74,124,89,0.3);
+    width: 100%; padding: 14px; background: #4a7c59; color: #fff;
+    border: none; border-radius: 14px; font-size: 16px; font-weight: 800;
+    cursor: pointer; font-family: inherit; box-shadow: 0 4px 14px rgba(74,124,89,0.3);
   }
   .add-row { display: none; gap: 8px; }
   .add-row.show { display: flex; }
   .add-row input {
-    flex: 1; padding: 12px 16px;
-    font-size: 16px; font-family: inherit; font-weight: 600;
-    border: 2px solid #4a7c59; border-radius: 14px;
+    flex: 1; padding: 12px 16px; font-size: 16px; font-family: inherit;
+    font-weight: 600; border: 2px solid #4a7c59; border-radius: 14px;
     outline: none; background: #fff; color: #333; min-width: 0;
   }
-  .add-row .btn-confirm {
-    background: #4a7c59; color: #fff; border: none; border-radius: 14px;
-    padding: 12px 20px; font-size: 20px; font-weight: 800;
-    cursor: pointer; font-family: inherit;
-  }
-  .add-row .btn-cancel {
-    background: #eee; color: #888; border: none; border-radius: 14px;
-    padding: 12px 16px; font-size: 14px; font-weight: 700;
-    cursor: pointer; font-family: inherit;
-  }
+  .add-row .btn-confirm { background: #4a7c59; color: #fff; border: none; border-radius: 14px; padding: 12px 20px; font-size: 20px; font-weight: 800; cursor: pointer; font-family: inherit; }
+  .add-row .btn-cancel { background: #eee; color: #888; border: none; border-radius: 14px; padding: 12px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
   .cat-select { display: none; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
   .cat-select.show { display: flex; }
   .cat-chip {
-    padding: 6px 12px; border-radius: 10px;
-    font-size: 12px; font-weight: 700;
-    border: 2px solid #ddd; background: #fff;
-    cursor: pointer; font-family: inherit; transition: all 0.15s;
+    padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
+    border: 2px solid #ddd; background: #fff; cursor: pointer; font-family: inherit; transition: all 0.15s;
   }
   .cat-chip.active { border-color: #4a7c59; background: #4a7c5915; color: #4a7c59; }
 
   /* ── Dinners ── */
-  .dinner-header-info {
-    padding: 16px 20px 4px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 8px;
-  }
-  .week-title { font-size: 18px; font-weight: 800; color: #2d5016; letter-spacing: -0.3px; }
-
+  .dinner-header-info { padding: 16px 20px 4px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .week-title { font-size: 18px; font-weight: 800; color: #2d5016; }
   .verify-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 14px; border-radius: 12px;
-    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; gap: 6px; padding: 8px 14px;
+    border-radius: 12px; font-size: 13px; font-weight: 700;
     cursor: pointer; font-family: inherit; border: none; transition: all 0.25s;
   }
   .verify-btn.unverified { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
   .verify-btn.verified { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
   .verify-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .unverified .verify-dot { background: #e65100; animation: pulse 1.5s infinite; }
+  .unverified .verify-dot { background: #e65100; animation: blink 1.5s infinite; }
   .verified .verify-dot { background: #2e7d32; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  .verify-timestamp {
-    text-align: center; padding: 4px 20px 8px;
-    font-size: 12px; color: #999; font-weight: 600;
-  }
-
-  .days-list { padding: 8px 16px 16px; }
-
-  .day-card {
-    background: #fff; border-radius: 16px;
-    margin-bottom: 10px; border: 1px solid #eee;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden;
-  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .verify-timestamp { text-align: center; padding: 4px 20px 8px; font-size: 12px; color: #999; font-weight: 600; }
+  .days-list { padding: 8px 16px 0; }
+  .day-card { background: #fff; border-radius: 16px; margin-bottom: 10px; border: 1px solid #eee; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
   .day-card.today { border-color: #4a7c59; border-width: 2px; }
-
-  .day-row {
-    display: flex; align-items: center;
-    padding: 14px 16px; gap: 12px; cursor: pointer;
-  }
+  .day-row { display: flex; align-items: center; padding: 14px 16px; gap: 12px; cursor: pointer; }
   .day-row:active { background: #faf9f6; }
-
-  .day-label {
-    font-size: 13px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    width: 32px; flex-shrink: 0;
-  }
+  .day-label { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; width: 32px; flex-shrink: 0; }
   .day-card.today .day-label { color: #4a7c59; }
-  .today-badge {
-    font-size: 10px; font-weight: 800; color: #fff;
-    background: #4a7c59; border-radius: 6px;
-    padding: 2px 7px; margin-left: -4px;
-  }
-
+  .today-badge { font-size: 10px; font-weight: 800; color: #fff; background: #4a7c59; border-radius: 6px; padding: 2px 7px; margin-left: -4px; }
   .day-meal { flex: 1; font-size: 16px; font-weight: 600; color: #333; min-width: 0; }
   .day-meal.empty { color: #bbb; font-style: italic; font-weight: 400; }
   .day-edit-icon { color: #ccc; font-size: 16px; flex-shrink: 0; }
-
   .day-edit { display: none; padding: 0 16px 14px; gap: 8px; }
   .day-edit.show { display: flex; }
-  .day-edit input {
-    flex: 1; padding: 10px 14px;
-    font-size: 15px; font-family: inherit; font-weight: 600;
-    border: 2px solid #4a7c59; border-radius: 12px;
-    outline: none; background: #fff; color: #333; min-width: 0;
-  }
-  .day-edit .btn-save {
-    background: #4a7c59; color: #fff; border: none; border-radius: 12px;
-    padding: 10px 16px; font-size: 14px; font-weight: 800;
-    cursor: pointer; font-family: inherit;
-  }
-  .day-edit .btn-del {
-    background: #fce4ec; color: #c62828; border: none; border-radius: 12px;
-    padding: 10px 14px; font-size: 14px;
-    cursor: pointer; font-family: inherit;
-  }
+  .day-edit input { flex: 1; padding: 10px 14px; font-size: 15px; font-family: inherit; font-weight: 600; border: 2px solid #4a7c59; border-radius: 12px; outline: none; background: #fff; color: #333; min-width: 0; }
+  .day-edit .btn-save { background: #4a7c59; color: #fff; border: none; border-radius: 12px; padding: 10px 16px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; }
+  .day-edit .btn-del { background: #fce4ec; color: #c62828; border: none; border-radius: 12px; padding: 10px 14px; font-size: 14px; cursor: pointer; font-family: inherit; }
 
-  /* ── Share modal ── */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5); z-index: 100;
-    align-items: center; justify-content: center;
-    padding: 20px;
+  /* ── Meal suggestion section ── */
+  .suggest-section { padding: 8px 16px 16px; }
+  .btn-suggest {
+    width: 100%; padding: 16px; border: 2px dashed #4a7c59; border-radius: 16px;
+    background: #4a7c5908; color: #4a7c59; font-size: 16px; font-weight: 800;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
   }
-  .modal-overlay.show { display: flex; }
-  .modal {
-    background: #fff; border-radius: 20px;
-    padding: 28px 24px; width: 100%; max-width: 360px;
-    text-align: center;
+  .btn-suggest:active { background: #4a7c5918; }
+
+  .suggestion-card {
+    background: #fff; border-radius: 16px; margin-bottom: 10px;
+    border: 1px solid #eee; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    overflow: hidden; animation: fadeIn 0.3s ease;
   }
-  .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: #2d5016; }
-  .modal p { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
-  .modal .share-url {
-    background: #f5f4f0; border: 2px solid #e0ddd6; border-radius: 12px;
-    padding: 12px 16px; font-size: 13px; font-weight: 600;
-    word-break: break-all; color: #333; margin-bottom: 16px;
-    text-align: left; line-height: 1.4;
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .suggestion-row {
+    display: flex; align-items: center; padding: 14px 16px; gap: 12px;
   }
-  .modal .btn-copy {
-    width: 100%; padding: 14px;
+  .suggestion-badge {
+    font-size: 10px; font-weight: 800; color: #fff; border-radius: 8px;
+    padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .suggestion-name { flex: 1; font-size: 16px; font-weight: 700; }
+  .suggestion-remove { color: #ccc; font-size: 20px; cursor: pointer; padding: 4px; }
+  .suggestion-remove:active { color: #e55; }
+
+  .suggest-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .suggest-actions button {
+    flex: 1; min-width: 140px; padding: 14px 12px; border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-ingredients { background: #e8f5e9; color: #2e7d32; }
+  .btn-apply { background: #4a7c59; color: #fff; box-shadow: 0 4px 14px rgba(74,124,89,0.3); }
+  .btn-reshuffle { background: #fff3e0; color: #e65100; }
+  .btn-cancel-suggest { background: #eee; color: #888; }
+
+  /* ── Ingredients overlay ── */
+  .ingr-section { padding: 0 16px 16px; }
+  .ingr-card {
+    background: #fff; border-radius: 16px; border: 1px solid #eee;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden;
+  }
+  .ingr-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    border-bottom: 1px solid #f0eeeb; cursor: pointer;
+  }
+  .ingr-item:last-child { border-bottom: none; }
+  .ingr-check {
+    width: 22px; height: 22px; border-radius: 6px; border: 2px solid #4a7c59;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: #4a7c59; transition: all 0.15s;
+  }
+  .ingr-item.unchecked .ingr-check { background: transparent; }
+  .ingr-check svg { display: block; }
+  .ingr-item.unchecked .ingr-check svg { display: none; }
+  .ingr-item.unchecked .ingr-name { color: #aaa; text-decoration: line-through; }
+  .ingr-name { font-size: 15px; font-weight: 600; flex: 1; }
+  .ingr-cat-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #f0f0f0; color: #888; }
+  .ingr-meal-header { padding: 12px 16px 6px; font-size: 13px; font-weight: 800; color: #4a7c59; text-transform: uppercase; letter-spacing: 0.5px; background: #faf9f6; }
+
+  .btn-move-to-list {
+    width: 100%; padding: 16px; margin-top: 12px;
     background: #4a7c59; color: #fff; border: none; border-radius: 14px;
     font-size: 16px; font-weight: 800; cursor: pointer; font-family: inherit;
-    margin-bottom: 10px;
+    box-shadow: 0 4px 14px rgba(74,124,89,0.3);
   }
-  .modal .btn-close {
-    width: 100%; padding: 12px;
+  .btn-back-suggest {
+    width: 100%; padding: 12px; margin-top: 8px;
     background: #eee; color: #888; border: none; border-radius: 14px;
     font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
   }
 
-  /* ── Loading ── */
-  .loading-screen {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    min-height: 60vh; gap: 16px;
+  /* ── Config gear ── */
+  .config-toggle {
+    display: flex; align-items: center; gap: 6px; padding: 10px 16px;
+    color: #999; font-size: 13px; font-weight: 700; cursor: pointer;
   }
-  .spinner {
-    width: 40px; height: 40px;
-    border: 4px solid #e0ddd6; border-top-color: #4a7c59;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  .config-toggle:active { color: #666; }
+  .config-panel { display: none; padding: 0 16px 16px; }
+  .config-panel.show { display: block; }
+  .config-card {
+    background: #fff; border-radius: 16px; padding: 16px;
+    border: 1px solid #eee; box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 16px; font-weight: 700; color: #999; }
+  .config-card h3 { font-size: 14px; font-weight: 800; color: #2d5016; margin-bottom: 12px; }
+  .config-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid #f0eeeb;
+  }
+  .config-row:last-child { border-bottom: none; }
+  .config-label { font-size: 14px; font-weight: 600; }
+  .config-stepper { display: flex; align-items: center; gap: 12px; }
+  .config-stepper button {
+    width: 32px; height: 32px; border-radius: 10px; border: 2px solid #ddd;
+    background: #fff; font-size: 18px; font-weight: 800; cursor: pointer;
+    font-family: inherit; display: flex; align-items: center; justify-content: center;
+    color: #4a7c59;
+  }
+  .config-stepper button:active { background: #f0f0f0; }
+  .config-stepper span { font-size: 18px; font-weight: 800; min-width: 24px; text-align: center; }
+  .config-total { text-align: center; font-size: 13px; font-weight: 700; color: #999; margin-top: 8px; }
+
+  /* ── Library ── */
+  .library-section { padding: 0 16px 16px; }
+  .lib-cat { margin-bottom: 16px; }
+  .lib-cat-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 4px; margin-bottom: 6px;
+  }
+  .lib-cat-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+  .lib-add-btn {
+    font-size: 12px; font-weight: 700; color: #4a7c59; background: #4a7c5912;
+    border: 1px solid #4a7c5930; border-radius: 8px; padding: 4px 10px;
+    cursor: pointer; font-family: inherit;
+  }
+  .lib-card { background: #fff; border-radius: 14px; border: 1px solid #eee; overflow: hidden; }
+  .lib-item {
+    display: flex; align-items: center; padding: 12px 14px; gap: 10px;
+    border-bottom: 1px solid #f0eeeb; font-size: 15px; font-weight: 600;
+    cursor: pointer;
+  }
+  .lib-item:last-child { border-bottom: none; }
+  .lib-item:active { background: #faf9f6; }
+  .lib-item-name { flex: 1; }
+  .lib-item-count { font-size: 12px; color: #999; font-weight: 700; }
+  .lib-item-arrow { color: #ccc; font-size: 14px; flex-shrink: 0; }
+  .lib-item-del { color: #ccc; font-size: 16px; cursor: pointer; padding: 4px; }
+  .lib-item-del:active { color: #e55; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 100;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #fff; border-radius: 20px; padding: 28px 24px;
+    width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;
+  }
+  .modal h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: #2d5016; }
+  .modal p { font-size: 14px; color: #666; margin-bottom: 16px; line-height: 1.5; }
+  .modal .share-url {
+    background: #f5f4f0; border: 2px solid #e0ddd6; border-radius: 12px;
+    padding: 12px 16px; font-size: 13px; font-weight: 600;
+    word-break: break-all; color: #333; margin-bottom: 16px; text-align: left;
+  }
+  .modal .btn-copy, .modal .btn-modal-action {
+    width: 100%; padding: 14px; background: #4a7c59; color: #fff;
+    border: none; border-radius: 14px; font-size: 16px; font-weight: 800;
+    cursor: pointer; font-family: inherit; margin-bottom: 10px;
+  }
+  .modal .btn-close {
+    width: 100%; padding: 12px; background: #eee; color: #888;
+    border: none; border-radius: 14px; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .modal label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 6px; color: #333; }
+  .modal input, .modal textarea {
+    width: 100%; padding: 10px 14px; font-size: 15px; font-family: inherit;
+    font-weight: 600; border: 2px solid #ddd; border-radius: 12px;
+    outline: none; background: #fff; color: #333; margin-bottom: 12px;
+  }
+  .modal textarea { height: 80px; resize: vertical; }
+  .modal input:focus, .modal textarea:focus { border-color: #4a7c59; }
+
+  .ingr-edit-row { display: flex; gap: 6px; margin-bottom: 8px; }
+  .ingr-edit-row input { flex: 1; margin-bottom: 0; }
+  .ingr-edit-row select {
+    padding: 10px 8px; border: 2px solid #ddd; border-radius: 12px;
+    font-family: inherit; font-weight: 600; font-size: 13px; background: #fff;
+    min-width: 90px;
+  }
+  .ingr-edit-row .btn-ingr-del {
+    background: #fce4ec; color: #c62828; border: none; border-radius: 10px;
+    padding: 0 12px; font-size: 16px; cursor: pointer; font-family: inherit;
+  }
+  .btn-add-ingr {
+    padding: 8px 14px; background: #f0f0f0; color: #666; border: none;
+    border-radius: 10px; font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: inherit; margin-bottom: 16px;
+  }
+
+  .success-toast {
+    position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
+    background: #2e7d32; color: #fff; padding: 14px 24px; border-radius: 14px;
+    font-size: 15px; font-weight: 800; z-index: 200; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2s forwards;
+  }
+  @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(-20px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+  @keyframes toastOut { from { opacity:1; } to { opacity:0; } }
 </style>
 </head>
 <body>
@@ -302,9 +347,7 @@
 </div>
 
 <div class="view active" id="view-liste">
-  <div class="list" id="list">
-    <div class="loading-screen"><div class="spinner"></div><div class="loading-text">Kobler til...</div></div>
-  </div>
+  <div class="list" id="list"><div style="text-align:center;padding:80px 20px;color:#999"><div style="font-size:32px;margin-bottom:8px">⏳</div><div style="font-weight:700">Kobler til...</div></div></div>
   <div class="done-msg" id="doneMsg">✅ Alt hentet! God middag!</div>
 </div>
 
@@ -312,12 +355,23 @@
   <div class="dinner-header-info">
     <div class="week-title" id="weekTitle"></div>
     <button class="verify-btn unverified" id="verifyBtn" onclick="toggleVerify()">
-      <span class="verify-dot"></span>
-      <span id="verifyLabel">Ikke bekreftet</span>
+      <span class="verify-dot"></span><span id="verifyLabel">Ikke bekreftet</span>
     </button>
   </div>
   <div id="verifyTimestamp" class="verify-timestamp" style="display:none"></div>
   <div class="days-list" id="daysList"></div>
+
+  <div class="suggest-section" id="suggestSection"></div>
+
+  <div class="config-toggle" onclick="toggleConfig()">⚙️ <span id="configToggleLabel">Innstillinger & bibliotek</span></div>
+  <div class="config-panel" id="configPanel">
+    <div class="config-card">
+      <h3>🎯 Antall per kategori</h3>
+      <div id="configRows"></div>
+      <div class="config-total" id="configTotal"></div>
+    </div>
+    <div id="librarySection" class="library-section"></div>
+  </div>
 </div>
 
 <div class="bottom-bar" id="bottomBar">
@@ -333,404 +387,455 @@
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
     <h2>📲 Del handlelisten</h2>
-    <p>Send denne lenken til noen du vil dele listen med. Alle med lenken kan se og redigere.</p>
+    <p>Send denne lenken. Alle med lenken kan se og redigere.</p>
     <div class="share-url" id="shareUrl"></div>
     <button class="btn-copy" id="btnCopy" onclick="copyShareUrl()">📋 Kopier lenke</button>
-    <button class="btn-close" onclick="closeShareModal()">Lukk</button>
+    <button class="btn-close" onclick="closeModal('shareModal')">Lukk</button>
   </div>
 </div>
 
-<!-- Firebase SDK -->
+<div class="modal-overlay" id="mealModal">
+  <div class="modal">
+    <h2 id="mealModalTitle">Legg til middag</h2>
+    <label>Navn</label>
+    <input type="text" id="mealNameInput" placeholder="Eks: Taco">
+    <label>Ingredienser</label>
+    <div id="mealIngrList"></div>
+    <button class="btn-add-ingr" onclick="addMealIngrRow()">+ Legg til ingrediens</button>
+    <label>Oppskrift (valgfritt)</label>
+    <textarea id="mealRecipeInput" placeholder="Skriv oppskrift her..."></textarea>
+    <button class="btn-modal-action" onclick="saveMealToLibrary()">Lagre</button>
+    <button class="btn-close" id="mealDeleteBtn" style="display:none;background:#fce4ec;color:#c62828;margin-bottom:10px" onclick="deleteFromModal()">🗑 Slett middag</button>
+    <button class="btn-close" onclick="closeModal('mealModal')">Avbryt</button>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
-/* ══════════════════════════════════
-   FIREBASE SETUP
-   ══════════════════════════════════ */
-const FIREBASE_URL = "https://handlelistehogo-default-rtdb.europe-west1.firebasedatabase.app";
-
-firebase.initializeApp({ databaseURL: FIREBASE_URL });
+/* ═══════════════════════════════════
+   FIREBASE
+   ═══════════════════════════════════ */
+firebase.initializeApp({ databaseURL: "https://handlelistehogo-default-rtdb.europe-west1.firebasedatabase.app" });
 const db = firebase.database();
+let listId, itemsRef, dinnersRef, libraryRef, isConnected = false;
 
-let listId = null;
-let isConnected = false;
-let itemsRef = null;
-let dinnersRef = null;
-
-function generateId() {
-  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let id = "";
-  for (let i = 0; i < 8; i++) id += chars[Math.floor(Math.random() * chars.length)];
-  return id;
-}
+function generateId() { let s=""; for(let i=0;i<8;i++) s+="abcdefghijklmnopqrstuvwxyz0123456789"[Math.floor(Math.random()*36)]; return s; }
 
 function initList() {
-  // Check URL params for shared list
-  const params = new URLSearchParams(window.location.search);
-  const sharedId = params.get("list");
+  const p = new URLSearchParams(window.location.search).get("list");
+  if (p) { listId = p; localStorage.setItem("hl_id", listId); }
+  else { listId = localStorage.getItem("hl_id"); if (!listId) { listId = generateId(); localStorage.setItem("hl_id", listId); seedDefaults(); } }
 
-  if (sharedId) {
-    listId = sharedId;
-    localStorage.setItem("handleliste_listId", listId);
-  } else {
-    listId = localStorage.getItem("handleliste_listId");
-    if (!listId) {
-      listId = generateId();
-      localStorage.setItem("handleliste_listId", listId);
-      // Push default items on first create
-      seedDefaultItems();
-    }
-  }
-
-  // Set up refs
   itemsRef = db.ref(`lists/${listId}/items`);
   dinnersRef = db.ref(`lists/${listId}/dinners`);
+  libraryRef = db.ref(`lists/${listId}/library`);
 
-  // Listen for connection state
-  db.ref(".info/connected").on("value", (snap) => {
-    isConnected = snap.val() === true;
-    renderHeader();
-  });
-
-  // Listen for items changes
-  itemsRef.on("value", (snap) => {
-    const data = snap.val();
-    items = data ? Object.entries(data).map(([fbKey, val]) => ({ ...val, fbKey })) : [];
-    renderList();
-  });
-
-  // Listen for dinners changes
-  dinnersRef.on("value", (snap) => {
-    dinnerData = snap.val() || { meals: {}, verified: null, verifiedWeek: null };
-    if (currentTab === "middager") renderDinners();
-  });
+  db.ref(".info/connected").on("value", s => { isConnected = s.val()===true; renderHeader(); });
+  itemsRef.on("value", s => { items = s.val() ? Object.entries(s.val()).map(([k,v])=>({...v,fbKey:k})) : []; renderList(); });
+  dinnersRef.on("value", s => { dinnerData = s.val() || {meals:{},verified:null,verifiedWeek:null}; if(currentTab==="middager") renderDinners(); });
+  libraryRef.on("value", s => { mealLibrary = s.val() || null; if(!mealLibrary) { seedLibrary(); } else { renderLibrary(); } });
 }
 
-function seedDefaultItems() {
-  const defaults = [
-    { id: 1, name: "400g kjøttdeig", cat: "kjott", checked: false },
-    { id: 2, name: "600g kylling lårfilet", cat: "kjott", checked: false },
-    { id: 3, name: "Servelat", cat: "kjott", checked: false },
-    { id: 4, name: "3x YT vanilje", cat: "meieri", checked: false },
-    { id: 5, name: "Cottage cheese", cat: "meieri", checked: false },
-    { id: 6, name: "Melk", cat: "meieri", checked: false },
-    { id: 7, name: "Smør", cat: "meieri", checked: false },
-    { id: 8, name: "Crème fraîche", cat: "meieri", checked: false },
-    { id: 9, name: "Ost", cat: "meieri", checked: false },
-    { id: 10, name: "Egg", cat: "meieri", checked: false },
-    { id: 11, name: "Brød", cat: "bakeri", checked: false },
-    { id: 12, name: "Paprika", cat: "frukt", checked: false },
-    { id: 13, name: "Tomat", cat: "frukt", checked: false },
-    { id: 14, name: "Agurk", cat: "frukt", checked: false },
-    { id: 15, name: "Purre", cat: "frukt", checked: false },
-    { id: 16, name: "Gulrot", cat: "frukt", checked: false },
-    { id: 17, name: "Kinakål", cat: "frukt", checked: false },
-    { id: 18, name: "Avocado", cat: "frukt", checked: false },
-    { id: 19, name: "Curry paste", cat: "torr", checked: false },
-    { id: 20, name: "Taco krydder", cat: "torr", checked: false },
-    { id: 21, name: "Wok mix", cat: "torr", checked: false },
-    { id: 22, name: "Nachos", cat: "torr", checked: false },
-    { id: 23, name: "Taco saus", cat: "torr", checked: false },
+function seedDefaults() {
+  const d = [
+    {id:1,name:"400g kjøttdeig",cat:"kjott",checked:false},{id:2,name:"600g kylling lårfilet",cat:"kjott",checked:false},
+    {id:3,name:"Servelat",cat:"kjott",checked:false},{id:4,name:"3x YT vanilje",cat:"meieri",checked:false},
+    {id:5,name:"Cottage cheese",cat:"meieri",checked:false},{id:6,name:"Melk",cat:"meieri",checked:false},
+    {id:7,name:"Smør",cat:"meieri",checked:false},{id:8,name:"Crème fraîche",cat:"meieri",checked:false},
+    {id:9,name:"Ost",cat:"meieri",checked:false},{id:10,name:"Egg",cat:"meieri",checked:false},
+    {id:11,name:"Brød",cat:"bakeri",checked:false},{id:12,name:"Paprika",cat:"frukt",checked:false},
+    {id:13,name:"Tomat",cat:"frukt",checked:false},{id:14,name:"Agurk",cat:"frukt",checked:false},
+    {id:15,name:"Purre",cat:"frukt",checked:false},{id:16,name:"Gulrot",cat:"frukt",checked:false},
+    {id:17,name:"Kinakål",cat:"frukt",checked:false},{id:18,name:"Avocado",cat:"frukt",checked:false},
+    {id:19,name:"Curry paste",cat:"torr",checked:false},{id:20,name:"Taco krydder",cat:"torr",checked:false},
+    {id:21,name:"Wok mix",cat:"torr",checked:false},{id:22,name:"Nachos",cat:"torr",checked:false},
+    {id:23,name:"Taco saus",cat:"torr",checked:false},
   ];
-  const ref = db.ref(`lists/${listId}/items`);
-  defaults.forEach((item) => ref.push(item));
+  d.forEach(i => db.ref(`lists/${listId}/items`).push(i));
 }
 
-/* ══════════════════════════════════
-   SHARING
-   ══════════════════════════════════ */
-function getShareUrl() {
-  const base = window.location.origin + window.location.pathname;
-  return `${base}?list=${listId}`;
-}
+const DEFAULT_LIBRARY = {
+  kjott: [
+    { name:"Taco", ingredients:[{n:"Kjøttdeig 400g",c:"kjott"},{n:"Tacokrydder",c:"torr"},{n:"Nachos",c:"torr"},{n:"Rømme",c:"meieri"},{n:"Ost",c:"meieri"},{n:"Salat",c:"frukt"},{n:"Tomat",c:"frukt"},{n:"Tacosaus",c:"torr"}], recipe:"" },
+    { name:"Lasagne", ingredients:[{n:"Kjøttdeig 400g",c:"kjott"},{n:"Lasagneplater",c:"torr"},{n:"Ost",c:"meieri"},{n:"Tomatsaus",c:"torr"},{n:"Løk",c:"frukt"},{n:"Hvitløk",c:"frukt"},{n:"Melk",c:"meieri"},{n:"Smør",c:"meieri"}], recipe:"" },
+    { name:"Pasta bolognese", ingredients:[{n:"Kjøttdeig 400g",c:"kjott"},{n:"Spaghetti",c:"torr"},{n:"Tomatsaus",c:"torr"},{n:"Løk",c:"frukt"},{n:"Hvitløk",c:"frukt"},{n:"Gulrot",c:"frukt"}], recipe:"" },
+    { name:"Kjøttkaker", ingredients:[{n:"Kjøttdeig 400g",c:"kjott"},{n:"Løk",c:"frukt"},{n:"Melk",c:"meieri"},{n:"Brødmuler",c:"torr"},{n:"Poteter",c:"frukt"},{n:"Brokkoli",c:"frukt"},{n:"Brun saus",c:"torr"}], recipe:"" },
+    { name:"Hamburger", ingredients:[{n:"Kjøttdeig 400g",c:"kjott"},{n:"Hamburgerbrød",c:"bakeri"},{n:"Salat",c:"frukt"},{n:"Tomat",c:"frukt"},{n:"Løk",c:"frukt"},{n:"Ost",c:"meieri"},{n:"Ketchup",c:"torr"}], recipe:"" },
+  ],
+  kylling: [
+    { name:"Kylling wok", ingredients:[{n:"Kyllingfilet",c:"kjott"},{n:"Wok-grønnsaker",c:"frukt"},{n:"Nudler",c:"torr"},{n:"Soyasaus",c:"torr"},{n:"Ingefær",c:"frukt"}], recipe:"" },
+    { name:"Kylling tikka masala", ingredients:[{n:"Kyllingfilet",c:"kjott"},{n:"Tikka masala saus",c:"torr"},{n:"Ris",c:"torr"},{n:"Nanbrød",c:"bakeri"}], recipe:"" },
+    { name:"Kylling i form", ingredients:[{n:"Kyllinglår",c:"kjott"},{n:"Poteter",c:"frukt"},{n:"Gulrot",c:"frukt"},{n:"Løk",c:"frukt"},{n:"Fløte",c:"meieri"}], recipe:"" },
+    { name:"Kylling caesar salat", ingredients:[{n:"Kyllingfilet",c:"kjott"},{n:"Romana salat",c:"frukt"},{n:"Parmesan",c:"meieri"},{n:"Cæsardressing",c:"torr"},{n:"Krutonger",c:"torr"}], recipe:"" },
+    { name:"Kylling enchiladas", ingredients:[{n:"Kyllingfilet",c:"kjott"},{n:"Tortilla",c:"torr"},{n:"Enchilada saus",c:"torr"},{n:"Ost",c:"meieri"},{n:"Rømme",c:"meieri"}], recipe:"" },
+  ],
+  vegetar: [
+    { name:"Grønnsakssuppe", ingredients:[{n:"Poteter",c:"frukt"},{n:"Gulrot",c:"frukt"},{n:"Purre",c:"frukt"},{n:"Selleri",c:"frukt"},{n:"Løk",c:"frukt"},{n:"Grønnsaksbuljong",c:"torr"}], recipe:"" },
+    { name:"Pasta med pesto", ingredients:[{n:"Pasta",c:"torr"},{n:"Pesto",c:"torr"},{n:"Cherrytomater",c:"frukt"},{n:"Mozzarella",c:"meieri"},{n:"Spinat",c:"frukt"}], recipe:"" },
+    { name:"Omelett", ingredients:[{n:"Egg",c:"meieri"},{n:"Ost",c:"meieri"},{n:"Paprika",c:"frukt"},{n:"Sopp",c:"frukt"},{n:"Tomat",c:"frukt"}], recipe:"" },
+    { name:"Grønnsaks-curry", ingredients:[{n:"Kikerter",c:"torr"},{n:"Kokosmjølk",c:"torr"},{n:"Curry paste",c:"torr"},{n:"Ris",c:"torr"},{n:"Spinat",c:"frukt"},{n:"Løk",c:"frukt"}], recipe:"" },
+    { name:"Vegetar taco", ingredients:[{n:"Bønner",c:"torr"},{n:"Mais",c:"torr"},{n:"Tacokrydder",c:"torr"},{n:"Nachos",c:"torr"},{n:"Rømme",c:"meieri"},{n:"Salat",c:"frukt"},{n:"Tomat",c:"frukt"}], recipe:"" },
+  ],
+  fisk: [
+    { name:"Laks med poteter", ingredients:[{n:"Laksfilet",c:"kjott"},{n:"Poteter",c:"frukt"},{n:"Brokkoli",c:"frukt"},{n:"Sitron",c:"frukt"},{n:"Smør",c:"meieri"}], recipe:"" },
+    { name:"Fiskegrateng", ingredients:[{n:"Torsk",c:"kjott"},{n:"Poteter",c:"frukt"},{n:"Gulrot",c:"frukt"},{n:"Ost",c:"meieri"},{n:"Fløte",c:"meieri"},{n:"Smør",c:"meieri"}], recipe:"" },
+    { name:"Fish tacos", ingredients:[{n:"Torsk",c:"kjott"},{n:"Tortilla",c:"torr"},{n:"Coleslaw",c:"frukt"},{n:"Lime",c:"frukt"},{n:"Rømme",c:"meieri"}], recipe:"" },
+    { name:"Fiskesuppe", ingredients:[{n:"Torsk",c:"kjott"},{n:"Poteter",c:"frukt"},{n:"Gulrot",c:"frukt"},{n:"Purre",c:"frukt"},{n:"Fløte",c:"meieri"}], recipe:"" },
+    { name:"Laks wok", ingredients:[{n:"Laksfilet",c:"kjott"},{n:"Wok-grønnsaker",c:"frukt"},{n:"Nudler",c:"torr"},{n:"Soyasaus",c:"torr"}], recipe:"" },
+  ]
+};
 
-function openShareModal() {
-  document.getElementById("shareUrl").textContent = getShareUrl();
-  document.getElementById("btnCopy").textContent = "📋 Kopier lenke";
-  document.getElementById("shareModal").classList.add("show");
-}
+function seedLibrary() { libraryRef.set(DEFAULT_LIBRARY); }
 
-function closeShareModal() {
-  document.getElementById("shareModal").classList.remove("show");
-}
-
-function copyShareUrl() {
-  const url = getShareUrl();
-  if (navigator.share) {
-    navigator.share({ title: "Handleliste", url }).catch(() => {});
-  } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => {
-      document.getElementById("btnCopy").textContent = "✅ Kopiert!";
-      setTimeout(() => {
-        document.getElementById("btnCopy").textContent = "📋 Kopier lenke";
-      }, 2000);
-    });
-  }
-}
-
-/* ══════════════════════════════════
-   SHARED UI
-   ══════════════════════════════════ */
+/* ═══════════════════════════════════
+   SHARED
+   ═══════════════════════════════════ */
 let currentTab = "liste";
-
 function switchTab(tab) {
   currentTab = tab;
-  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===tab));
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   document.getElementById(`view-${tab}`).classList.add("active");
-  document.getElementById("bottomBar").style.display = tab === "liste" ? "" : "none";
-  hideAddUI();
-  renderHeader();
-  if (tab === "middager") renderDinners();
+  document.getElementById("bottomBar").style.display = tab==="liste"?"":"none";
+  hideAddUI(); renderHeader();
+  if(tab==="middager"){ renderDinners(); renderSuggestions(); renderLibrary(); }
 }
-
 function renderHeader() {
-  const el = document.getElementById("headerContent");
-  const dot = `<span class="sync-dot ${isConnected ? 'connected' : 'disconnected'}"></span>`;
-
-  if (currentTab === "liste") {
-    const total = items.length;
-    const checked = items.filter(i => i.checked).length;
-    el.innerHTML = `<div class="header-row">
-      <div>
-        <h1>${dot}🛒 Handleliste</h1>
-        <div class="sub">${checked} av ${total} hentet</div>
-      </div>
-      <div class="header-actions">
-        ${checked > 0 ? '<button class="btn-header" onclick="removeChecked()">Fjern ✓</button>' : ''}
-        <button class="btn-header" onclick="openShareModal()">📲 Del</button>
-      </div>
-    </div>
-    <div class="progress-track"><div class="progress-fill" style="width:${total > 0 ? (checked/total)*100 : 0}%"></div></div>`;
+  const el=document.getElementById("headerContent"), dot=`<span class="sync-dot ${isConnected?'connected':'disconnected'}"></span>`;
+  if(currentTab==="liste"){
+    const t=items.length, c=items.filter(i=>i.checked).length;
+    el.innerHTML=`<div class="header-row"><div><h1>${dot}🛒 Handleliste</h1><div class="sub">${c} av ${t} hentet</div></div><div class="header-actions">${c>0?'<button class="btn-header" onclick="removeChecked()">Fjern ✓</button>':''}${t>0?'<button class="btn-header" onclick="clearList()">🗑</button>':''}<button class="btn-header" onclick="openShareModal()">📲 Del</button></div></div><div class="progress-track"><div class="progress-fill" style="width:${t>0?(c/t)*100:0}%"></div></div>`;
   } else {
-    el.innerHTML = `<div class="header-row">
-      <div><h1>${dot}🍽️ Ukesplan</h1><div class="sub">Planlegg middagene for uken</div></div>
-      <button class="btn-header" onclick="openShareModal()">📲 Del</button>
-    </div>`;
+    el.innerHTML=`<div class="header-row"><div><h1>${dot}🍽️ Ukesplan</h1><div class="sub">Planlegg middagene for uken</div></div><button class="btn-header" onclick="openShareModal()">📲 Del</button></div>`;
   }
 }
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+function openShareModal(){document.getElementById("shareUrl").textContent=getShareUrl();document.getElementById("btnCopy").textContent="📋 Kopier lenke";document.getElementById("shareModal").classList.add("show");}
+function getShareUrl(){return window.location.origin+window.location.pathname+`?list=${listId}`;}
+function copyShareUrl(){const u=getShareUrl();if(navigator.share)navigator.share({title:"Handleliste",url:u}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>{document.getElementById("btnCopy").textContent="✅ Kopiert!";setTimeout(()=>document.getElementById("btnCopy").textContent="📋 Kopier lenke",2000);});}
+function closeModal(id){document.getElementById(id).classList.remove("show");}
+function toast(msg){const t=document.createElement("div");t.className="success-toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
 
-function esc(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
-
-/* ══════════════════════════════════
+/* ═══════════════════════════════════
    SHOPPING LIST
-   ══════════════════════════════════ */
-const CATEGORIES = [
-  { key: "frukt", name: "Frukt & grønt", icon: "🥬", color: "#4a7c59" },
-  { key: "kjott", name: "Kjøtt", icon: "🥩", color: "#a0522d" },
-  { key: "meieri", name: "Meieri", icon: "🧀", color: "#5b7fa5" },
-  { key: "bakeri", name: "Bakeri", icon: "🍞", color: "#c49a3c" },
-  { key: "torr", name: "Tørrvarer", icon: "🫙", color: "#8b6b8b" },
-];
+   ═══════════════════════════════════ */
+const CATS=[{key:"frukt",name:"Frukt & grønt",icon:"🥬",color:"#4a7c59"},{key:"kjott",name:"Kjøtt & fisk",icon:"🥩",color:"#a0522d"},{key:"meieri",name:"Meieri",icon:"🧀",color:"#5b7fa5"},{key:"bakeri",name:"Bakeri",icon:"🍞",color:"#c49a3c"},{key:"torr",name:"Tørrvarer",icon:"🫙",color:"#8b6b8b"}];
+let items=[], selectedCat="torr";
 
-let items = [];
-let selectedCat = "torr";
-
-function renderList() {
-  const list = document.getElementById("list");
-  const total = items.length;
-  const checked = items.filter(i => i.checked).length;
-  document.getElementById("doneMsg").classList.toggle("show", checked === total && total > 0);
+function renderList(){
+  const el=document.getElementById("list"), t=items.length, c=items.filter(i=>i.checked).length;
+  document.getElementById("doneMsg").classList.toggle("show",c===t&&t>0);
   renderHeader();
+  let h="";
+  for(const cat of CATS){
+    const ci=items.filter(i=>i.cat===cat.key); if(!ci.length)continue;
+    const ad=ci.every(i=>i.checked), left=ci.filter(i=>!i.checked).length;
+    h+=`<div class="category${ad?" all-checked":""}"><div class="cat-header"><span class="cat-icon">${cat.icon}</span><span class="cat-name" style="color:${cat.color}">${cat.name}</span><span class="cat-count" style="background:${cat.color}18;color:${cat.color}">${left}</span></div><div class="cat-items">`;
+    for(const i of ci) h+=`<div class="item${i.checked?" checked":""}" style="--cat-color:${cat.color}" onclick="toggle('${i.fbKey}')"><div class="checkbox"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5L5.5 10L11 4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="item-name">${esc(i.name)}</span><div class="item-delete" onclick="event.stopPropagation();removeItem('${i.fbKey}')">×</div></div>`;
+    h+=`</div></div>`;
+  }
+  if(!items.length&&isConnected) h=`<div style="text-align:center;padding:60px 20px;color:#999"><div style="font-size:48px;margin-bottom:12px">🛒</div><div style="font-size:16px;font-weight:700">Listen er tom</div></div>`;
+  el.innerHTML=h;
+}
+function toggle(k){const i=items.find(x=>x.fbKey===k);if(i)itemsRef.child(k).update({checked:!i.checked});}
+function removeItem(k){itemsRef.child(k).remove();}
+function removeChecked(){const u={};items.filter(i=>i.checked).forEach(i=>u[i.fbKey]=null);itemsRef.update(u);}
+function clearList(){if(confirm("Tømme hele handlelisten?"))itemsRef.remove();}
+function showAddUI(){document.getElementById("btnAddMain").style.display="none";document.getElementById("addRow").classList.add("show");document.getElementById("catSelect").classList.add("show");renderCatChips();document.getElementById("addInput").focus();}
+function hideAddUI(){document.getElementById("btnAddMain").style.display="";document.getElementById("addRow").classList.remove("show");document.getElementById("catSelect").classList.remove("show");document.getElementById("addInput").value="";}
+function renderCatChips(){document.getElementById("catSelect").innerHTML=CATS.map(c=>`<button class="cat-chip${c.key===selectedCat?" active":""}" onclick="selectedCat='${c.key}';renderCatChips()">${c.icon} ${c.name}</button>`).join("");}
+function addItem(){const inp=document.getElementById("addInput"),n=inp.value.trim();if(!n)return;itemsRef.push({id:Date.now(),name:n,cat:selectedCat,checked:false});inp.value="";inp.focus();}
 
-  let html = "";
-  for (const cat of CATEGORIES) {
-    const ci = items.filter(i => i.cat === cat.key);
-    if (!ci.length) continue;
-    const allDone = ci.every(i => i.checked);
-    const left = ci.filter(i => !i.checked).length;
-    html += `<div class="category${allDone ? " all-checked" : ""}">
-      <div class="cat-header">
-        <span class="cat-icon">${cat.icon}</span>
-        <span class="cat-name" style="color:${cat.color}">${cat.name}</span>
-        <span class="cat-count" style="background:${cat.color}18;color:${cat.color}">${left}</span>
-      </div><div class="cat-items">`;
-    for (const item of ci) {
-      html += `<div class="item${item.checked ? " checked" : ""}" style="--cat-color:${cat.color}" onclick="toggle('${item.fbKey}')">
-        <div class="checkbox"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7.5L5.5 10L11 4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <span class="item-name">${esc(item.name)}</span>
-        <div class="item-delete" onclick="event.stopPropagation();removeItem('${item.fbKey}')">×</div>
+/* ═══════════════════════════════════
+   DINNERS (week plan)
+   ═══════════════════════════════════ */
+const DAYS=[{key:"mon",label:"Man",full:"Mandag"},{key:"tue",label:"Tir",full:"Tirsdag"},{key:"wed",label:"Ons",full:"Onsdag"},{key:"thu",label:"Tor",full:"Torsdag"},{key:"fri",label:"Fre",full:"Fredag"},{key:"sat",label:"Lør",full:"Lørdag"},{key:"sun",label:"Søn",full:"Søndag"}];
+const DCOL=["#4a7c59","#a0522d","#5b7fa5","#8b6b8b","#c49a3c","#3a7ca5","#7c5a4a"];
+let dinnerData={meals:{},verified:null,verifiedWeek:null}, editingDay=null;
+
+function getWeek(){const d=new Date(),t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return Math.ceil((((t-y)/864e5)+1)/7);}
+function todayIdx(){const d=new Date().getDay();return d===0?6:d-1;}
+function isVerified(){return dinnerData.verifiedWeek===getWeek()&&dinnerData.verified;}
+function toggleVerify(){if(isVerified()){dinnerData.verified=null;dinnerData.verifiedWeek=null;}else{dinnerData.verified=new Date().toISOString();dinnerData.verifiedWeek=getWeek();}dinnersRef.set(dinnerData);}
+
+function renderDinners(){
+  const w=getWeek(); document.getElementById("weekTitle").textContent=`Ukesmiddager — UKE ${w}`;
+  const btn=document.getElementById("verifyBtn"),lbl=document.getElementById("verifyLabel"),ts=document.getElementById("verifyTimestamp"),v=isVerified();
+  btn.className=`verify-btn ${v?"verified":"unverified"}`; lbl.textContent=v?"Bekreftet ✓":"Ikke bekreftet";
+  if(v&&dinnerData.verified){const dt=new Date(dinnerData.verified);ts.textContent=`Bekreftet ${dt.toLocaleDateString("no-NO",{weekday:"long",day:"numeric",month:"long"})} kl. ${dt.toLocaleTimeString("no-NO",{hour:"2-digit",minute:"2-digit"})}`;ts.style.display="";}else ts.style.display="none";
+
+  const ti=todayIdx(), meals=dinnerData.meals||{};
+  document.getElementById("daysList").innerHTML=DAYS.map((d,i)=>{
+    const m=meals[d.key]||"",isT=i===ti,ed=editingDay===d.key;
+    return`<div class="day-card${isT?" today":""}"><div class="day-row" onclick="startEdit('${d.key}')"><div class="day-label" style="color:${DCOL[i]}">${d.label}</div>${isT?'<span class="today-badge">I DAG</span>':''}<div class="day-meal${m?'':' empty'}">${m?esc(m):'Trykk for å legge til...'}</div><div class="day-edit-icon">✎</div></div><div class="day-edit${ed?' show':''}" id="edit-${d.key}"><input type="text" value="${esc(m)}" placeholder="${d.full}s middag..." id="input-${d.key}" onkeydown="if(event.key==='Enter')saveMeal('${d.key}')"><button class="btn-save" onclick="saveMeal('${d.key}')">OK</button>${m?`<button class="btn-del" onclick="deleteMeal('${d.key}')">🗑</button>`:''}</div></div>`;
+  }).join("");
+  if(editingDay){const inp=document.getElementById(`input-${editingDay}`);if(inp){inp.focus();inp.selectionStart=inp.value.length;}}
+}
+function startEdit(k){editingDay=editingDay===k?null:k;renderDinners();}
+function saveMeal(k){const v=document.getElementById(`input-${k}`).value.trim();if(!dinnerData.meals)dinnerData.meals={};if(v)dinnerData.meals[k]=v;else delete dinnerData.meals[k];dinnerData.verified=null;dinnerData.verifiedWeek=null;editingDay=null;dinnersRef.set(dinnerData);}
+function deleteMeal(k){if(dinnerData.meals)delete dinnerData.meals[k];dinnerData.verified=null;dinnerData.verifiedWeek=null;editingDay=null;dinnersRef.set(dinnerData);}
+
+/* ═══════════════════════════════════
+   MEAL SUGGESTIONS
+   ═══════════════════════════════════ */
+const MEAL_CATS=[{key:"kjott",name:"Kjøttmiddag",icon:"🥩",color:"#a0522d"},{key:"kylling",name:"Kyllingmiddag",icon:"🍗",color:"#c49a3c"},{key:"vegetar",name:"Vegetarmiddag",icon:"🥦",color:"#4a7c59"},{key:"fisk",name:"Fiskemiddag",icon:"🐟",color:"#5b7fa5"}];
+
+let mealLibrary = null;
+let mealConfig = { kjott:2, kylling:2, vegetar:1, fisk:2 };
+let suggestions = []; // [{name, cat, ingredients, recipe}]
+let suggestMode = "idle"; // idle | picking | ingredients
+let selectedIngredients = []; // [{n,c,checked,mealName}]
+
+function renderSuggestions() {
+  const el = document.getElementById("suggestSection");
+  if (suggestMode === "idle") {
+    el.innerHTML = `<button class="btn-suggest" onclick="generateSuggestions()">🎲 Gi forslag til middager</button>`;
+    return;
+  }
+  if (suggestMode === "picking") {
+    let h = `<div style="font-size:15px;font-weight:800;color:#2d5016;margin-bottom:12px;">Forslag til ${suggestions.length} middager</div>`;
+    suggestions.forEach((s, i) => {
+      const mc = MEAL_CATS.find(c => c.key === s.cat);
+      h += `<div class="suggestion-card"><div class="suggestion-row"><span class="suggestion-badge" style="background:${mc?mc.color:'#888'}">${mc?mc.icon:''} ${mc?mc.name:s.cat}</span><span class="suggestion-name">${esc(s.name)}</span><span class="suggestion-remove" onclick="removeSuggestion(${i})">×</span></div></div>`;
+    });
+    h += `<div class="suggest-actions">
+      <button class="btn-reshuffle" onclick="generateSuggestions()">🎲 Nye forslag</button>
+    </div>`;
+    if (suggestions.length > 0) {
+      h += `<div class="suggest-actions" style="margin-top:0">
+        <button class="btn-ingredients" onclick="showIngredients()">🥕 Vis ingredienser</button>
+        <button class="btn-apply" onclick="applyToWeekPlan()">📅 Legg i ukesplan</button>
       </div>`;
     }
-    html += `</div></div>`;
-  }
-
-  if (!items.length && isConnected) {
-    html = `<div style="text-align:center;padding:60px 20px;color:#999;">
-      <div style="font-size:48px;margin-bottom:12px;">🛒</div>
-      <div style="font-size:16px;font-weight:700;">Listen er tom</div>
-      <div style="font-size:14px;margin-top:4px;">Legg til produkter med knappen under</div>
+    h += `<div class="suggest-actions" style="margin-top:0">
+      <button class="btn-cancel-suggest" onclick="cancelSuggestions()">✅ Ferdig</button>
     </div>`;
+    el.innerHTML = h;
+    return;
   }
-
-  list.innerHTML = html;
-}
-
-function toggle(fbKey) {
-  const item = items.find(i => i.fbKey === fbKey);
-  if (item) {
-    itemsRef.child(fbKey).update({ checked: !item.checked });
+  if (suggestMode === "ingredients") {
+    let h = `<div style="font-size:15px;font-weight:800;color:#2d5016;margin-bottom:12px;">Ingredienser</div>`;
+    h += `<div class="ingr-card">`;
+    let currentMeal = "";
+    selectedIngredients.forEach((ing, i) => {
+      if (ing.mealName !== currentMeal) {
+        currentMeal = ing.mealName;
+        h += `<div class="ingr-meal-header">${esc(currentMeal)}</div>`;
+      }
+      const catObj = CATS.find(c => c.key === ing.c);
+      h += `<div class="ingr-item${ing.checked?'':' unchecked'}" onclick="toggleIngr(${i})">
+        <div class="ingr-check"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7.5L5.5 10L11 4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="ingr-name">${esc(ing.n)}</span>
+        <span class="ingr-cat-badge">${catObj?catObj.icon:''} ${catObj?catObj.name:ing.c}</span>
+      </div>`;
+    });
+    h += `</div>`;
+    h += `<button class="btn-move-to-list" onclick="moveToShoppingList()">🛒 Flytt til handleliste</button>`;
+    h += `<button class="btn-back-suggest" onclick="suggestMode='picking';renderSuggestions()">← Tilbake til forslag</button>`;
+    el.innerHTML = h;
   }
 }
 
-function removeItem(fbKey) {
-  itemsRef.child(fbKey).remove();
+function generateSuggestions() {
+  if (!mealLibrary) return;
+  suggestions = [];
+  for (const mc of MEAL_CATS) {
+    const count = mealConfig[mc.key] || 0;
+    const available = mealLibrary[mc.key] || [];
+    if (!available.length || !count) continue;
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < Math.min(count, shuffled.length); i++) {
+      const m = shuffled[i];
+      suggestions.push({ name: m.name, cat: mc.key, ingredients: m.ingredients || [], recipe: m.recipe || "" });
+    }
+  }
+  suggestions.sort(() => Math.random() - 0.5);
+  suggestMode = "picking";
+  renderSuggestions();
 }
 
-function removeChecked() {
-  const checkedItems = items.filter(i => i.checked);
-  const updates = {};
-  checkedItems.forEach(i => { updates[i.fbKey] = null; });
-  itemsRef.update(updates);
+function removeSuggestion(i) { suggestions.splice(i, 1); renderSuggestions(); }
+function cancelSuggestions() { suggestions = []; suggestMode = "idle"; renderSuggestions(); }
+
+function showIngredients() {
+  selectedIngredients = [];
+  const seen = new Set();
+  suggestions.forEach(s => {
+    (s.ingredients || []).forEach(ing => {
+      const key = ing.n.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        selectedIngredients.push({ n: ing.n, c: ing.c, checked: true, mealName: s.name });
+      } else {
+        // duplicate ingredient, still show it grouped under its meal
+        selectedIngredients.push({ n: ing.n, c: ing.c, checked: true, mealName: s.name, duplicate: true });
+      }
+    });
+  });
+  // Sort: group by meal
+  suggestMode = "ingredients";
+  renderSuggestions();
 }
 
-function showAddUI() {
-  document.getElementById("btnAddMain").style.display = "none";
-  document.getElementById("addRow").classList.add("show");
-  document.getElementById("catSelect").classList.add("show");
-  renderCatChips();
-  document.getElementById("addInput").focus();
+function toggleIngr(i) {
+  selectedIngredients[i].checked = !selectedIngredients[i].checked;
+  renderSuggestions();
 }
 
-function hideAddUI() {
-  document.getElementById("btnAddMain").style.display = "";
-  document.getElementById("addRow").classList.remove("show");
-  document.getElementById("catSelect").classList.remove("show");
-  document.getElementById("addInput").value = "";
+function moveToShoppingList() {
+  const toAdd = selectedIngredients.filter(i => i.checked);
+  const deduped = new Map();
+  toAdd.forEach(i => {
+    const key = i.n.toLowerCase();
+    if (!deduped.has(key)) deduped.set(key, { name: i.n, cat: i.c });
+  });
+  deduped.forEach(item => {
+    itemsRef.push({ id: Date.now() + Math.random(), name: item.name, cat: item.cat, checked: false });
+  });
+  toast(`✅ ${deduped.size} ingredienser lagt til!`);
+  suggestMode = "picking";
+  selectedIngredients = [];
+  renderSuggestions();
 }
 
-function renderCatChips() {
-  document.getElementById("catSelect").innerHTML = CATEGORIES.map(c =>
-    `<button class="cat-chip${c.key === selectedCat ? " active" : ""}" onclick="selectedCat='${c.key}';renderCatChips()">${c.icon} ${c.name}</button>`
+function applyToWeekPlan() {
+  if (!dinnerData.meals) dinnerData.meals = {};
+  const dayKeys = DAYS.map(d => d.key);
+  suggestions.forEach((s, i) => {
+    if (i < dayKeys.length) dinnerData.meals[dayKeys[i]] = s.name;
+  });
+  dinnerData.verified = null;
+  dinnerData.verifiedWeek = null;
+  dinnersRef.set(dinnerData);
+  toast(`📅 ${Math.min(suggestions.length, 7)} middager lagt i ukesplanen!`);
+  renderSuggestions();
+  renderDinners();
+}
+
+/* ═══════════════════════════════════
+   CONFIG & LIBRARY
+   ═══════════════════════════════════ */
+let configOpen = false;
+
+function toggleConfig() {
+  configOpen = !configOpen;
+  document.getElementById("configPanel").classList.toggle("show", configOpen);
+  document.getElementById("configToggleLabel").textContent = configOpen ? "Skjul innstillinger" : "Innstillinger & bibliotek";
+  if (configOpen) { renderConfig(); renderLibrary(); }
+}
+
+function renderConfig() {
+  const el = document.getElementById("configRows");
+  let total = 0;
+  el.innerHTML = MEAL_CATS.map(mc => {
+    const v = mealConfig[mc.key] || 0;
+    total += v;
+    return `<div class="config-row"><span class="config-label">${mc.icon} ${mc.name}</span><div class="config-stepper"><button onclick="stepConfig('${mc.key}',-1)">−</button><span>${v}</span><button onclick="stepConfig('${mc.key}',1)">+</button></div></div>`;
+  }).join("");
+  document.getElementById("configTotal").textContent = `Totalt: ${total} middager`;
+}
+
+function stepConfig(key, delta) {
+  const v = (mealConfig[key] || 0) + delta;
+  mealConfig[key] = Math.max(0, Math.min(7, v));
+  renderConfig();
+}
+
+function renderLibrary() {
+  if (!mealLibrary) return;
+  const el = document.getElementById("librarySection");
+  el.innerHTML = MEAL_CATS.map(mc => {
+    const meals = mealLibrary[mc.key] || [];
+    return `<div class="lib-cat"><div class="lib-cat-header"><span class="lib-cat-title" style="color:${mc.color}">${mc.icon} ${mc.name}</span><button class="lib-add-btn" onclick="openAddMeal('${mc.key}')">+ Legg til</button></div><div class="lib-card">${
+      meals.length ? meals.map((m, i) =>
+        `<div class="lib-item" onclick="editLibMeal('${mc.key}',${i})"><span class="lib-item-name">${esc(m.name)}</span><span class="lib-item-count">${(m.ingredients||[]).length} ingr.</span><span class="lib-item-arrow">›</span></div>`
+      ).join('') : '<div class="lib-item" style="color:#bbb;font-style:italic;cursor:default">Ingen middager enda</div>'
+    }</div></div>`;
+  }).join("");
+}
+
+/* ── Add/Edit meal modal ── */
+let editingMealCat = null;
+let editingMealIdx = null; // null = adding, number = editing
+let mealIngrRows = [];
+
+function openAddMeal(catKey) {
+  editingMealCat = catKey;
+  editingMealIdx = null;
+  document.getElementById("mealModalTitle").textContent = `Legg til ${MEAL_CATS.find(c=>c.key===catKey)?.name || "middag"}`;
+  document.getElementById("mealNameInput").value = "";
+  document.getElementById("mealRecipeInput").value = "";
+  document.getElementById("mealDeleteBtn").style.display = "none";
+  mealIngrRows = [{ n: "", c: "frukt" }];
+  renderMealIngrRows();
+  document.getElementById("mealModal").classList.add("show");
+  setTimeout(() => document.getElementById("mealNameInput").focus(), 100);
+}
+
+function editLibMeal(catKey, idx) {
+  const meal = mealLibrary[catKey]?.[idx];
+  if (!meal) return;
+  editingMealCat = catKey;
+  editingMealIdx = idx;
+  document.getElementById("mealModalTitle").textContent = `Rediger: ${meal.name}`;
+  document.getElementById("mealNameInput").value = meal.name;
+  document.getElementById("mealRecipeInput").value = meal.recipe || "";
+  document.getElementById("mealDeleteBtn").style.display = "";
+  mealIngrRows = (meal.ingredients || []).map(i => ({ n: i.n, c: i.c }));
+  if (!mealIngrRows.length) mealIngrRows = [{ n: "", c: "frukt" }];
+  renderMealIngrRows();
+  document.getElementById("mealModal").classList.add("show");
+}
+
+function renderMealIngrRows() {
+  document.getElementById("mealIngrList").innerHTML = mealIngrRows.map((r, i) =>
+    `<div class="ingr-edit-row">
+      <input type="text" value="${esc(r.n)}" placeholder="Ingrediens..." oninput="mealIngrRows[${i}].n=this.value">
+      <select onchange="mealIngrRows[${i}].c=this.value">${CATS.map(c=>`<option value="${c.key}"${r.c===c.key?' selected':''}>${c.icon} ${c.name}</option>`).join('')}</select>
+      <button class="btn-ingr-del" onclick="mealIngrRows.splice(${i},1);renderMealIngrRows()">×</button>
+    </div>`
   ).join("");
 }
 
-function addItem() {
-  const input = document.getElementById("addInput");
-  const name = input.value.trim();
-  if (!name) return;
-  itemsRef.push({ id: Date.now(), name, cat: selectedCat, checked: false });
-  input.value = "";
-  input.focus();
+function addMealIngrRow() {
+  mealIngrRows.push({ n: "", c: "frukt" });
+  renderMealIngrRows();
 }
 
-/* ══════════════════════════════════
-   DINNERS
-   ══════════════════════════════════ */
-const DAYS = [
-  { key: "mon", label: "Man", full: "Mandag" },
-  { key: "tue", label: "Tir", full: "Tirsdag" },
-  { key: "wed", label: "Ons", full: "Onsdag" },
-  { key: "thu", label: "Tor", full: "Torsdag" },
-  { key: "fri", label: "Fre", full: "Fredag" },
-  { key: "sat", label: "Lør", full: "Lørdag" },
-  { key: "sun", label: "Søn", full: "Søndag" },
-];
-const DAY_COLORS = ["#4a7c59","#a0522d","#5b7fa5","#8b6b8b","#c49a3c","#3a7ca5","#7c5a4a"];
+function saveMealToLibrary() {
+  const name = document.getElementById("mealNameInput").value.trim();
+  if (!name) { document.getElementById("mealNameInput").focus(); return; }
+  const ingredients = mealIngrRows.filter(r => r.n.trim()).map(r => ({ n: r.n.trim(), c: r.c }));
+  const recipe = document.getElementById("mealRecipeInput").value.trim();
+  if (!mealLibrary[editingMealCat]) mealLibrary[editingMealCat] = [];
 
-let dinnerData = { meals: {}, verified: null, verifiedWeek: null };
-let editingDay = null;
-
-function getWeekNumber() {
-  const d = new Date();
-  const target = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dayNum = target.getUTCDay() || 7;
-  target.setUTCDate(target.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1));
-  return Math.ceil((((target - yearStart) / 86400000) + 1) / 7);
-}
-
-function getTodayIdx() { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; }
-
-function isVerified() { return dinnerData.verifiedWeek === getWeekNumber() && dinnerData.verified; }
-
-function toggleVerify() {
-  if (isVerified()) {
-    dinnerData.verified = null;
-    dinnerData.verifiedWeek = null;
+  if (editingMealIdx !== null) {
+    // Edit existing
+    mealLibrary[editingMealCat][editingMealIdx] = { name, ingredients, recipe };
+    toast(`✅ ${name} oppdatert!`);
   } else {
-    dinnerData.verified = new Date().toISOString();
-    dinnerData.verifiedWeek = getWeekNumber();
+    // Add new
+    mealLibrary[editingMealCat].push({ name, ingredients, recipe });
+    toast(`✅ ${name} lagt til!`);
   }
-  dinnersRef.set(dinnerData);
+  libraryRef.set(mealLibrary);
+  closeModal("mealModal");
 }
 
-function renderDinners() {
-  const week = getWeekNumber();
-  document.getElementById("weekTitle").textContent = `Ukesmiddager — UKE ${week}`;
-
-  const btn = document.getElementById("verifyBtn");
-  const label = document.getElementById("verifyLabel");
-  const ts = document.getElementById("verifyTimestamp");
-  const v = isVerified();
-
-  btn.className = `verify-btn ${v ? "verified" : "unverified"}`;
-  label.textContent = v ? "Bekreftet ✓" : "Ikke bekreftet";
-
-  if (v && dinnerData.verified) {
-    const dt = new Date(dinnerData.verified);
-    ts.textContent = `Bekreftet ${dt.toLocaleDateString("no-NO", { weekday: "long", day: "numeric", month: "long" })} kl. ${dt.toLocaleTimeString("no-NO", { hour: "2-digit", minute: "2-digit" })}`;
-    ts.style.display = "";
-  } else {
-    ts.style.display = "none";
-  }
-
-  const todayIdx = getTodayIdx();
-  const meals = dinnerData.meals || {};
-  const el = document.getElementById("daysList");
-
-  el.innerHTML = DAYS.map((day, i) => {
-    const meal = meals[day.key] || "";
-    const isToday = i === todayIdx;
-    const editing = editingDay === day.key;
-
-    return `<div class="day-card${isToday ? " today" : ""}">
-      <div class="day-row" onclick="startEdit('${day.key}')">
-        <div class="day-label" style="color:${DAY_COLORS[i]}">${day.label}</div>
-        ${isToday ? '<span class="today-badge">I DAG</span>' : ''}
-        <div class="day-meal${meal ? '' : ' empty'}">${meal ? esc(meal) : 'Trykk for å legge til...'}</div>
-        <div class="day-edit-icon">✎</div>
-      </div>
-      <div class="day-edit${editing ? ' show' : ''}" id="edit-${day.key}">
-        <input type="text" value="${esc(meal)}" placeholder="${day.full}s middag..."
-          id="input-${day.key}" onkeydown="if(event.key==='Enter')saveMeal('${day.key}')">
-        <button class="btn-save" onclick="saveMeal('${day.key}')">OK</button>
-        ${meal ? `<button class="btn-del" onclick="deleteMeal('${day.key}')">🗑</button>` : ''}
-      </div>
-    </div>`;
-  }).join("");
-
-  if (editingDay) {
-    const inp = document.getElementById(`input-${editingDay}`);
-    if (inp) { inp.focus(); inp.selectionStart = inp.value.length; }
+function deleteFromModal() {
+  if (editingMealIdx !== null && mealLibrary[editingMealCat]) {
+    const name = mealLibrary[editingMealCat][editingMealIdx]?.name || "middag";
+    mealLibrary[editingMealCat].splice(editingMealIdx, 1);
+    libraryRef.set(mealLibrary);
+    closeModal("mealModal");
+    toast(`🗑 ${name} slettet`);
   }
 }
 
-function startEdit(key) { editingDay = editingDay === key ? null : key; renderDinners(); }
-
-function saveMeal(key) {
-  const val = document.getElementById(`input-${key}`).value.trim();
-  if (!dinnerData.meals) dinnerData.meals = {};
-  if (val) dinnerData.meals[key] = val;
-  else delete dinnerData.meals[key];
-  dinnerData.verified = null;
-  dinnerData.verifiedWeek = null;
-  editingDay = null;
-  dinnersRef.set(dinnerData);
-}
-
-function deleteMeal(key) {
-  if (dinnerData.meals) delete dinnerData.meals[key];
-  dinnerData.verified = null;
-  dinnerData.verifiedWeek = null;
-  editingDay = null;
-  dinnersRef.set(dinnerData);
-}
-
-/* ══════════════════════════════════
+/* ═══════════════════════════════════
    INIT
-   ══════════════════════════════════ */
+   ═══════════════════════════════════ */
 initList();
 </script>
 </body>
